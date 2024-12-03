@@ -22,6 +22,19 @@
     </div>
 
     <script type="module">
+      // Global error handler to catch any errors in the app
+      window.onerror = function (message, source, lineno, colno, error) {
+        console.error(
+          "Caught global error:",
+          message,
+          source,
+          lineno,
+          colno,
+          error
+        );
+        return true; // Prevents the default browser error handler
+      };
+
       // Import Firebase modules
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
       import {
@@ -31,6 +44,7 @@
         query,
         orderBy,
         getDocs,
+        setLogLevel,
       } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
       // Firebase configuration
@@ -49,6 +63,9 @@
 
       console.log("Firebase initialized:", app); // Check Firebase initialization
 
+      // Enable Firebase debug logging (verbose logging for Firestore)
+      setLogLevel("debug");
+
       // Function to get comments from Firestore
       async function getComments() {
         const q = query(
@@ -57,13 +74,6 @@
         );
         const querySnapshot = await getDocs(q);
         const commentsContainer = document.getElementById("comments-container");
-
-        // Ensure the comments-container is available before setting innerHTML
-        if (!commentsContainer) {
-          console.error("comments-container element not found.");
-          return;
-        }
-
         commentsContainer.innerHTML = ""; // Clear existing comments
 
         console.log("Fetching comments...");
@@ -83,20 +93,22 @@
           console.log("No comments found.");
         }
       }
+
       // Function to submit comment
       async function submitComment(event) {
         event.preventDefault(); // Prevent form from reloading the page
 
-        console.log("Submitting comment..."); // Check if the function is being called
-
         const nameInput = document.getElementById("name");
         const commentInput = document.getElementById("comment");
 
-        console.log("Name:", nameInput.value);
-        console.log("Comment:", commentInput.value);
+        console.log("Submitting comment...");
+        console.log("Name:", nameInput.value); // Debugging step
+        console.log("Comment:", commentInput.value); // Debugging step
 
-        try {
-          if (nameInput.value && commentInput.value) {
+        if (nameInput.value && commentInput.value) {
+          try {
+            // Add comment to Firestore
+            console.log("Adding document to Firestore...");
             await addDoc(collection(db, "commentSection"), {
               name: nameInput.value,
               comment: commentInput.value,
@@ -105,25 +117,24 @@
 
             console.log("Comment submitted successfully!");
 
-            // Clear form fields
+            // Clear form fields after submitting
             nameInput.value = "";
             commentInput.value = "";
 
-            // Reload comments
-            getComments();
-          } else {
-            alert("Please enter a name and a comment.");
+            // Reload the comments
+            await getComments();
+          } catch (error) {
+            console.error("Error submitting comment:", error); // Detailed error message
           }
-        } catch (error) {
-          console.error("Error submitting comment:", error);
+        } else {
+          alert("Please enter a name and a comment.");
         }
       }
 
-      // Ensure DOM is loaded before accessing elements
-      document.addEventListener("DOMContentLoaded", () => {
+      window.onload = () => {
         // Fetch and display comments on page load
         getComments();
-      });
+      };
     </script>
   </body>
 </html>
