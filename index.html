@@ -93,8 +93,7 @@
           console.log("No comments found.");
         }
       }
-
-      // Function to submit comment
+      // Function to submit a comment
       async function submitComment(event) {
         event.preventDefault(); // Prevent form from reloading the page
 
@@ -109,23 +108,20 @@
           try {
             console.log("Adding document to Firestore...");
 
-            // Add comment to Firestore
-            const docRef = await addDoc(collection(db, "commentSection"), {
+            // Await the completion of addDoc before proceeding
+            await addDoc(collection(db, "commentSection"), {
               name: nameInput.value,
               comment: commentInput.value,
               timestamp: new Date(),
             });
 
-            console.log(
-              "Comment submitted successfully! Document ID:",
-              docRef.id
-            ); // Confirm the doc was added successfully
+            console.log("Comment submitted successfully!");
 
-            // Clear form fields after submitting (wait until the comment is added)
+            // Clear form fields after ensuring the comment is added
             nameInput.value = "";
             commentInput.value = "";
 
-            // Reload the comments (wait until the comment is added)
+            // Reload the comments
             await getComments();
           } catch (error) {
             console.error("Error submitting comment:", error); // Detailed error message
