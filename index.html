@@ -107,8 +107,9 @@
 
         if (nameInput.value && commentInput.value) {
           try {
-            // Add comment to Firestore
             console.log("Adding document to Firestore...");
+
+            // Add comment to Firestore
             await addDoc(collection(db, "commentSection"), {
               name: nameInput.value,
               comment: commentInput.value,
