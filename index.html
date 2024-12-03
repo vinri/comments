@@ -90,12 +90,11 @@
         const nameInput = document.getElementById("name");
         const commentInput = document.getElementById("comment");
 
-        // Log input values for debugging
         console.log("Name:", nameInput.value);
         console.log("Comment:", commentInput.value);
 
-        if (nameInput.value && commentInput.value) {
-          try {
+        try {
+          if (nameInput.value && commentInput.value) {
             // Add the comment to Firestore
             await addDoc(collection(db, "commentSection"), {
               name: nameInput.value,
@@ -111,12 +110,11 @@
 
             // Reload comments
             getComments();
-          } catch (error) {
-            console.error("Error submitting comment:", error);
+          } else {
+            alert("Please enter a name and a comment.");
           }
-        } else {
-          // Alert if name or comment is empty
-          alert("Please enter a name and a comment.");
+        } catch (error) {
+          console.error("Error submitting comment:", error);
         }
       }
 
