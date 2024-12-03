@@ -87,6 +87,8 @@
       async function submitComment(event) {
         event.preventDefault(); // Prevent form from reloading the page
 
+        console.log("Submitting comment..."); // Check if the function is being called
+
         const nameInput = document.getElementById("name");
         const commentInput = document.getElementById("comment");
 
@@ -95,7 +97,6 @@
 
         try {
           if (nameInput.value && commentInput.value) {
-            // Add the comment to Firestore
             await addDoc(collection(db, "commentSection"), {
               name: nameInput.value,
               comment: commentInput.value,
