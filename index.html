@@ -57,6 +57,13 @@
         );
         const querySnapshot = await getDocs(q);
         const commentsContainer = document.getElementById("comments-container");
+
+        // Ensure the comments-container is available before setting innerHTML
+        if (!commentsContainer) {
+          console.error("comments-container element not found.");
+          return;
+        }
+
         commentsContainer.innerHTML = ""; // Clear existing comments
 
         console.log("Fetching comments...");
@@ -111,10 +118,11 @@
         }
       }
 
-      window.onload = () => {
+      // Ensure DOM is loaded before accessing elements
+      document.addEventListener("DOMContentLoaded", () => {
         // Fetch and display comments on page load
         getComments();
-      };
+      });
     </script>
   </body>
 </html>
