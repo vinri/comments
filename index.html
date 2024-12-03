@@ -83,19 +83,20 @@
           console.log("No comments found.");
         }
       }
-
       // Function to submit comment
       async function submitComment(event) {
-        event.preventDefault();
+        event.preventDefault(); // Prevent form from reloading the page
 
         const nameInput = document.getElementById("name");
         const commentInput = document.getElementById("comment");
 
+        // Log input values for debugging
         console.log("Name:", nameInput.value);
         console.log("Comment:", commentInput.value);
 
         if (nameInput.value && commentInput.value) {
           try {
+            // Add the comment to Firestore
             await addDoc(collection(db, "commentSection"), {
               name: nameInput.value,
               comment: commentInput.value,
@@ -104,7 +105,7 @@
 
             console.log("Comment submitted successfully!");
 
-            // Clear form
+            // Clear form fields
             nameInput.value = "";
             commentInput.value = "";
 
@@ -114,6 +115,7 @@
             console.error("Error submitting comment:", error);
           }
         } else {
+          // Alert if name or comment is empty
           alert("Please enter a name and a comment.");
         }
       }
